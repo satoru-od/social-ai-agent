@@ -2,7 +2,7 @@ name: Post to Threads
 
 on:
   schedule:
-    - cron: "0 22 * * *" # 日本時間 毎朝7:00
+    - cron: "0 01 * * *" # 日本時間 毎朝10:00
   workflow_dispatch:
 
 jobs:
