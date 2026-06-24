@@ -1,6 +1,7 @@
 import csv
 import os
 import requests
+import json
 
 CSV_FILE = "posts.csv"
 
@@ -21,6 +22,9 @@ if target is None:
     print("No posts")
     exit()
 
+print("Posting text:")
+print(target["text"])
+
 r = requests.post(
     f"https://graph.threads.net/v1.0/{THREADS_USER_ID}/threads",
     data={
@@ -30,15 +34,30 @@ r = requests.post(
     },
 )
 
-creation_id = r.json()["id"]
+print("Create response status:", r.status_code)
+print("Create response body:", json.dumps(r.json(), ensure_ascii=False, indent=2))
 
-requests.post(
+r.raise_for_status()
+
+response_json = r.json()
+
+if "id" not in response_json:
+    raise Exception("No creation id returned from Threads API")
+
+creation_id = response_json["id"]
+
+publish = requests.post(
     f"https://graph.threads.net/v1.0/{THREADS_USER_ID}/threads_publish",
     data={
         "creation_id": creation_id,
         "access_token": ACCESS_TOKEN,
     },
 )
+
+print("Publish response status:", publish.status_code)
+print("Publish response body:", json.dumps(publish.json(), ensure_ascii=False, indent=2))
+
+publish.raise_for_status()
 
 target["posted"] = "yes"
 
