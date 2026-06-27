@@ -1,10 +1,10 @@
 import os
-import requests
 import json
+import requests
 
 INSTAGRAM_ACCESS_TOKEN = os.environ["INSTAGRAM_ACCESS_TOKEN"]
 
-r = requests.get(
+response = requests.get(
     "https://graph.instagram.com/me",
     params={
         "fields": "id,username",
@@ -12,7 +12,7 @@ r = requests.get(
     },
 )
 
-print("Status:", r.status_code)
-print(json.dumps(r.json(), ensure_ascii=False, indent=2))
+print("Status:", response.status_code)
+print(json.dumps(response.json(), ensure_ascii=False, indent=2))
 
-r.raise_for_status()
+response.raise_for_status()
